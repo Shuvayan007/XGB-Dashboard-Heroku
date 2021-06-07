@@ -34,7 +34,8 @@ tuning=st.sidebar.radio(
 )
 if tuning=='Tuning':
     st.sidebar.info('Initially, all parameter values are set to default. Change them according to your need.:smiley:')
-    base_score=st.sidebar.number_input('Base Score')
+    base_score=st.sidebar.number_input('Base Score',min_value=0.000,max_value=0.999,format='%.3f',step=0.001)
+
 
     # learning_rate=st.sidebar.number_input('Learning Rate',value=0.1)
     #
@@ -118,7 +119,7 @@ if tuning=='Tuning':
     #
     # ccp_alpha=st.sidebar.number_input('Cost-Complexity Pruning Alpha',value=0.0,min_value=0.0000)
     #
-    clf=XGBClassifier(base_score)
+    clf=XGBClassifier(base_score=base_score)
     # clf = GradientBoostingClassifier(loss, learning_rate, n_estimators, subsample, criterion, min_samples_split,
     #                                  min_samples_leaf, min_weight_fraction_leaf, max_depth ,min_impurity_decrease,
     #                                  min_impurity_split, init, random_state, max_features, verbose, max_leaf_nodes,
