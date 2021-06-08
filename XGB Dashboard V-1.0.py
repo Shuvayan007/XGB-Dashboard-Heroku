@@ -35,20 +35,28 @@ tuning=st.sidebar.radio(
 if tuning=='Tuning':
     st.sidebar.info('Initially, all parameter values are set to default. Change them according to your need.:smiley:')
 
-    base_score=st.sidebar.number_input('Base Score',min_value=0.00,max_value=0.99,format='%.2f')
+    base_score=st.sidebar.number_input('Base Score',min_value=0.01,max_value=0.99,format='%.2f',value=0.5)
 
     booster=st.sidebar.selectbox(
         'Booster',
         ('gbtree','gblinear','dart')
     )
 
-    colsample_bylevel=st.sidebar.number_input('Column Sample by Level',min_value=0.00,max_value=1.00)
+    if booster=='gbtree' or booster=='dart':
+        colsample_bylevel=st.sidebar.number_input('Column Sample by Level',min_value=0.00,max_value=1.00,value=1.00)
 
-    colsample_bynode=st.sidebar.number_input('Column Sample by Node',min_value=0.00,max_value=1.00)
+        colsample_bynode=st.sidebar.number_input('Column Sample by Node',min_value=0.00,max_value=1.00,value=1.00)
 
-    colsample_bytree=st.sidebar.number_input('Column Sample by Tree',min_value=0.00,max_value=1.00)
+        colsample_bytree=st.sidebar.number_input('Column Sample by Tree',min_value=0.00,max_value=1.00,value=1.00)
 
-    gamma=st.sidebar.slider('Gamma',max_value=500)
+        gamma=st.sidebar.slider('Gamma')
+    else:
+        colsample_bylevel = 1
+        colsample_bynode = 1
+        colsample_bytree = 1
+        gamma = 0
+
+    gpu_id=st.sidebar.slider('GPU Id',min_value=-1)
     # learning_rate=st.sidebar.number_input('Learning Rate',value=0.1)
     #
     # n_estimators=st.sidebar.slider('Boosting Stages (n_estimators)',min_value=1,max_value=500,value=100)
@@ -132,7 +140,7 @@ if tuning=='Tuning':
     # ccp_alpha=st.sidebar.number_input('Cost-Complexity Pruning Alpha',value=0.0,min_value=0.0000)
     #
     clf=XGBClassifier(base_score=base_score,booster=booster,colsample_bylevel=colsample_bylevel,colsample_bynode=colsample_bynode,
-                      colsample_bytree=colsample_bytree,gamma=gamma)
+                      colsample_bytree=colsample_bytree,gamma=gamma,gpu_id=gpu_id)
     # clf = GradientBoostingClassifier(loss, learning_rate, n_estimators, subsample, criterion, min_samples_split,
     #                                  min_samples_leaf, min_weight_fraction_leaf, max_depth ,min_impurity_decrease,
     #                                  min_impurity_split, init, random_state, max_features, verbose, max_leaf_nodes,
