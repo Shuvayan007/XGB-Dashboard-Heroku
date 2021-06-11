@@ -5,7 +5,6 @@ from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
-import subprocess
 
 def draw_meshgrid():
     a = np.arange(start=X[:, 0].min() - 1, stop=X[:, 0].max() + 1, step=0.01)
@@ -49,98 +48,32 @@ if tuning=='Tuning':
 
         colsample_bytree=st.sidebar.number_input('Column Sample by Tree',min_value=0.00,max_value=1.00,value=1.00)
 
-        gamma=st.sidebar.slider('Gamma')
+        gamma=st.sidebar.number_input('Gamma',min_value=0)
+
+        gpu_id = st.sidebar.number_input('GPU Id', value=-1, min_value=-1)
+
+        learning_rate=st.sidebar.number_input('Learning Rate',min_value=0.00,max_value=1.00,value=0.3)
+
+        max_delta_step = st.sidebar.number_input('Maximum Delta Step', min_value=0)
+
+        max_depth=st.sidebar.number_input('Maximum Depth',min_value=0,value=6)
+
+        min_child_weight=st.sidebar.number_input('Minimum Child Weight',min_value=0,value=1)
+
     else:
         colsample_bylevel = 1
         colsample_bynode = 1
         colsample_bytree = 1
         gamma = 0
+        learning_rate=0.3
+        gpu_id=-1
+        max_delta_step=0
+        max_depth=6
+        min_child_weight=1
 
-    gpu_id=st.sidebar.slider('GPU Id',min_value=-1)
-    # learning_rate=st.sidebar.number_input('Learning Rate',value=0.1)
-    #
-    # n_estimators=st.sidebar.slider('Boosting Stages (n_estimators)',min_value=1,max_value=500,value=100)
-    #
-    # subsample=st.sidebar.number_input('Subsample',min_value=0.01,max_value=1.0,value=1.0)
-    #
-    # criterion=st.sidebar.selectbox(
-    #     'Criterion',
-    #     ('friedman_mse','mse','mae')
-    # )
-    #
-    # min_samples_split=st.sidebar.slider('Minimum Samples Split',value=2,min_value=2)
-    #
-    # min_samples_leaf=st.sidebar.slider('Minimum Samples Leaf',min_value=1,value=1)
-    #
-    # min_weight_fraction_leaf=st.sidebar.number_input('Minimum Weight Fraction',min_value=0.0,max_value=1.0,value=0.0)
-    #
-    # max_depth=st.sidebar.slider('Maximum Depth',min_value=2,value=3)
-    #
-    # min_impurity_decrease=st.sidebar.number_input('Minimum Impurity Decrease',min_value=0.0,max_value=1.0,value=0.0)
-    #
-    # min_impurity_split=st.sidebar.selectbox('Minimum Impurity Split',
-    #                                         ('None','Value Input')
-    #                                         )
-    # if min_impurity_split=='None':
-    #     min_impurity_split=None
-    # else:
-    #     min_impurity_split=st.sidebar.number_input('Value',min_value=0.0000000,value=0.0000000,step=0.0000001,format='%.7f')
-    #
-    # init=st.sidebar.selectbox(
-    #     'Init',
-    #     ('zero','estimator')
-    # )
-    # if init=='estimator':
-    #     st.sidebar.error('This feature can only be used if you have made another model, whose outcome is to be used as the initial estimates of your Gradient Boosting model.')
-    #     st.info("Set 'Init' parameter value to 'zero'")
-    #
-    # random_state=st.sidebar.selectbox('Random State',
-    #                                   ('None','Value Input')
-    #                                   )
-    #
-    # if random_state=='None':
-    #     random_state=None
-    # else:
-    #     random_state=st.sidebar.slider('Random State',min_value=1,value=1)
-    #
-    # max_features=st.sidebar.selectbox(
-    #     'Max Features',
-    #     ('None','auto','sqrt','log2'),
-    # )
-    # if max_features=='None':
-    #     max_features=None
-    #
-    # verbose=st.sidebar.slider('Verbose (Printing has to be noted)',min_value=0,value=0)
-    #
-    # max_leaf_nodes=st.sidebar.selectbox('Maximum Leaf Nodes',
-    #                                     ('None','Value Input')
-    #                                     )
-    # if max_leaf_nodes=='None':
-    #     max_leaf_nodes=None
-    # else:
-    #     max_leaf_nodes=st.sidebar.slider('Value',min_value=1)
-    #
-    # warm_start=st.sidebar.selectbox(
-    #     'Warm Start',
-    #     ('False','True')
-    # )
-    #
-    # validation_fraction=st.sidebar.number_input('Validation Fraction',min_value=0.0,max_value=1.0,value=0.1)
-    #
-    # n_iter=st.sidebar.selectbox('n Iteration No Change',
-    #                      ('None','Value')
-    #                      )
-    # if n_iter=='Value':
-    #     n_iter_no_change= st.sidebar.slider('Value')
-    # else:
-    #     n_iter_no_change=None
-    #
-    # tol=st.sidebar.number_input('Tolerance',min_value=0.0000,value=0.0001,step=0.0001,format='%.4f')
-    #
-    # ccp_alpha=st.sidebar.number_input('Cost-Complexity Pruning Alpha',value=0.0,min_value=0.0000)
-    #
     clf=XGBClassifier(base_score=base_score,booster=booster,colsample_bylevel=colsample_bylevel,colsample_bynode=colsample_bynode,
-                      colsample_bytree=colsample_bytree,gamma=gamma,gpu_id=gpu_id)
+                      colsample_bytree=colsample_bytree,gamma=gamma,gpu_id=gpu_id,learning_rate=learning_rate,
+                      max_delta_step=max_delta_step,max_depth=max_depth,min_child_weight=min_child_weight)
     # clf = GradientBoostingClassifier(loss, learning_rate, n_estimators, subsample, criterion, min_samples_split,
     #                                  min_samples_leaf, min_weight_fraction_leaf, max_depth ,min_impurity_decrease,
     #                                  min_impurity_split, init, random_state, max_features, verbose, max_leaf_nodes,
